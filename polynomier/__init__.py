@@ -1,5 +1,6 @@
 import re
 from itertools import product, chain
+from frozendict import frozendict as fd
 
 
 def super_int(num_string):
@@ -131,9 +132,6 @@ class Polynomial:
 
 ############
 
-from frozendict import frozendict
-
-fd = frozendict
 
 
 def add(p0, p1):
@@ -188,6 +186,6 @@ if __name__ == "__main__":
     for v in "abcdefghijklmnopqrstuvwxyz":
         globals()[v] = v
 
-    p0 = {frozendict([(x, 2)]): 3, frozendict([(y, 1)]): 1}
-    p1 = {frozendict([(x, 2)]): 2, frozendict([(y, 1)]): 1}
-    assert add(p0, p1) == {frozendict({y: 1}): 2, frozendict({x: 2}): 5}
+    p0 = {fd([(x, 2)]): 3, fd([(y, 1)]): 1}
+    p1 = {fd([(x, 2)]): 2, fd([(y, 1)]): 1}
+    assert add(p0, p1) == {fd({y: 1}): 2, fd({x: 2}): 5}
