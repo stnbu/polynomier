@@ -128,124 +128,66 @@ class Polynomial:
             raise ValueError("Zero polynomial has undefined degree.")
         return max(indicies)
 
-    def _get_term_repr(self, i):
-        "how to implement shitty human syntax"
-        c = self.coeff.get(i, 0)
-        if c == 0:
-            return ""
-        exponent = "" if i < 2 else super_int(str(i))
-        coeff = "" if i > 0 and c == 1 else str(c)
-        variable = "" if i < 1 else "x"
-        oper = "" if i == self.degree else " + "
-        if c < 0:
-            oper = "-" if i == self.degree else " - "
-            if len(coeff) > 0:
-                coeff = coeff.lstrip("-")
-        return oper + coeff + variable + exponent
 
-    def __repr__(self):
-        result = []
-        for i in sorted(self.coeff, reverse=True):
-            result.append(self._get_term_repr(i))
-        return "".join(result).lstrip(" +")
+############
+
+from frozendict import frozendict
+
+fd = frozendict
 
 
-def parse_term(term):
-    if not re.search(r"\d", term):
-        if term.startswith("-"):
-            term = "-1" + term.lstrip(" -")
-        else:
-            term = "1" + term.lstrip(" +")
-    result = re.search("(?P<coeff>[-]?\d+(\.\d+)?)(?P<symbols>(?:[^\d]?).*)", term)
-    coeff = float(result.group("coeff"))
-    symbols = result.group("symbols").strip(" )(")
-    indexes = set(re.findall("\^(\d+)", symbols))
-    index = 1
-    if len(indexes) > 1:
-        raise ValueError
-    if len(indexes) > 0:
-        index = int(indexes.pop())
-    symbols = set(re.sub("[\d^]", "", symbols))
-    return index, symbols, coeff
+def add(p0, p1):
+    results = {}
+    common_terms = set(p0) & set(p1)
+    p0_ = p0.copy()
+    p1_ = p1.copy()
+    for key in common_terms:
+        results[key] = p0[key] + p1[key]
+        p0_.pop(key)
+        p1_.pop(key)
+    results.update(p0_)
+    results.update(p1_)
+    return {v: c for (v, c) in results.items() if c != 0}
 
 
-def str_to_poly(string):
-    results = string.replace(" ", "")
-    results = results.replace("-", "@-")
-    results = results.replace("+", "@+").lstrip("@")
-    return [parse_term(term) for term in results.split("@")]
+# for now... define just field element (e.g. 3.95/aka float) multiplication
+def mul(p0, r):
+    results = {}
+    for key, coeff in p0.items():
+        results[key] = coeff * r
+    return results
+
+
+# which permits us to define sub as
+def sub(p0, p1):
+    return add(p0, mul(p1, -1))
+
+
+def _get_symbol(sym, symbol_pows):
+    for symbol, power in symbol_pows:
+        if sym == symbol:
+            return sym, power
+
+
+def mul(p0, p1):
+    results = {}
+    for (vars0, coeff0), (vars1, coeff1) in product(p0.items(), p1.items()):
+        vars0 = dict(vars0)
+        vars1 = dict(vars1)
+        new_vars = []
+        for symbol in set(vars0) | set(vars1):
+            power = vars0.get(symbol, 0) + vars1.get(symbol, 0)
+            new_vars.append((symbol, power))
+
+        results[fs(new_vars)] = coeff0 * coeff1
+    return results
 
 
 if __name__ == "__main__":
 
-    assert str_to_poly("3x^2") == [(2, {"x"}, 3.0)]
-    assert str_to_poly("-3x^3y^3") == [(3, {"x", "y"}, -3.0)]
-    assert str_to_poly("-3x^3y^3 + 2y^2") == [(3, {"x", "y"}, -3.0), (2, {"y"}, 2.0)]
-    assert str_to_poly("-3x^3y^3 + 2y^2 - y") == [
-        (3, {"x", "y"}, -3.0),
-        (2, {"y"}, 2.0),
-        (1, {"y"}, -1.0),
-    ]
-    assert str_to_poly("-3x^3y^3 + 2y^2 - y + 3") == [
-        (3, {"x", "y"}, -3.0),
-        (2, {"y"}, 2.0),
-        (1, {"y"}, -1.0),
-        (1, set(), 3.0),
-    ]
+    for v in "abcdefghijklmnopqrstuvwxyz":
+        globals()[v] = v
 
-    p1 = Polynomial(0, 0, 1)
-    print("p1 = %s" % p1)
-    p2 = Polynomial(1, 0, 2)
-    print("p2 = %s" % p2)
-    p3 = p1 * p2
-    print("p3 = p1 * p2 = %s" % p3)
-    p4 = p3 + p2
-    print("p4 = p3 + p2 = %s" % p4)
-    p5 = p4 + 8
-    print("p5 = p4 + 8 = %s" % p5)
-    p6 = p3 - 8
-    print("p6 = p3 - 8 = %s" % p6)
-    p7 = p4 - p3
-    print("p7 = p4 - p3 = %s" % p7)
-
-    assert 36 == p3(2)
-    assert 4 == p1(2)
-    assert 9 == p2(2)
-    assert Polynomial(1, 0, 3, 0, 2) == p4
-    assert Polynomial(as_dict={4: 2, 2: 3, 0: 9}) == p5
-    assert Polynomial(as_dict={4: 2, 2: 1, 0: -8}) == p6
-    assert p7 == Polynomial(0, 0, 1) * 2 + 1
-
-    p8 = Polynomial(1, 1)
-    p9 = Polynomial(1, 1)
-    print("(%s) * (%s) = %s" % (p8, p9, p8 * p9))
-
-    p10 = Polynomial(1, 1)
-    p11 = Polynomial(-1, 1)
-    print("(%s) * (%s) = %s" % (p10, p11, p10 * p11))
-
-    division = [
-        (Polynomial(5, 2, 1, 3), Polynomial(1, 2, 1)),
-        (Polynomial(-10, -3, 1), Polynomial(2, 1)),
-        (Polynomial(-4, 0, -2, 1), Polynomial(-3, 1)),
-    ]
-    for dividend, divisor in division:
-        quotient = dividend // divisor
-        remainder = dividend % divisor
-        assert dividend == divisor * quotient + remainder
-        assert dividend / divisor == quotient + remainder
-
-    rootable = Polynomial(-1, 0, 1)
-    assert rootable.is_root(1)
-    assert rootable.is_root(-1)
-
-    has_complex_roots = Polynomial(1, 0, 1)
-    assert has_complex_roots.is_root(1j)
-    assert has_complex_roots.is_root(-1j)
-
-    # see:
-    # https://en.wikipedia.org/wiki/Polynomial_long_division#Finding_tangents_to_polynomial_functions
-    r = 1
-    divisor = Polynomial(-1, r) ** 2
-    dividend = Polynomial(-42, 0, -12, 1)
-    assert dividend % divisor == Polynomial(-32, -21)
+    p0 = {frozendict([(x, 2)]): 3, frozendict([(y, 1)]): 1}
+    p1 = {frozendict([(x, 2)]): 2, frozendict([(y, 1)]): 1}
+    assert add(p0, p1) == {frozendict({y: 1}): 2, frozendict({x: 2}): 5}
