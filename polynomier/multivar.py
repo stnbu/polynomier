@@ -1,6 +1,7 @@
 from itertools import product
 from frozendict import frozendict as fd
 
+
 def add(p0, p1):
     results = {}
     common_terms = set(p0) & set(p1)
@@ -14,6 +15,7 @@ def add(p0, p1):
     results.update(p1_)
     return {v: c for (v, c) in results.items() if c != 0}
 
+
 def _mulr(p0, r):
     results = {}
     for key, coeff in p0.items():
@@ -23,6 +25,7 @@ def _mulr(p0, r):
 
 def sub(p0, p1):
     return add(p0, _mulr(p1, -1))
+
 
 def mul(p0, p1):
     results = {}
@@ -34,6 +37,7 @@ def mul(p0, p1):
         results[fd(new_vars)] += coeff0 * coeff1
     return results
 
+
 class MultiPoly:
     def __init__(self, terms):
         self.terms = terms
@@ -43,7 +47,7 @@ class MultiPoly:
 
     def __sub__(self, other):
         return self.__class__(sub(self.terms, other.terms))
-    
+
     def __mul__(self, other):
         return self.__class__(mul(self.terms, other.terms))
 
@@ -52,6 +56,7 @@ class MultiPoly:
 
     def __eq__(self, other):
         return self.terms == other.terms
+
 
 if __name__ == "__main__":
 
