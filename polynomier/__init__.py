@@ -1,5 +1,6 @@
 
 from .singlevar import Polynomial
-from .multivar import MultiPoly
+from .multivar import MultiPoly, fd
+from . import symbols
 
-__all__ = ["MultiPoly", "Polynomial"]
+__all__ = ["MultiPoly", "Polynomial", "fd", "symbols"]
