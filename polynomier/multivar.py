@@ -2,6 +2,7 @@ from itertools import product
 from frozendict import frozendict as fd
 from . import super_int
 
+
 def add(p0, p1):
     results = {}
     common_terms = set(p0) & set(p1)
@@ -91,9 +92,8 @@ class MultiPoly:
         degree = lambda term: -sum(term[0].values())
         for vars, coeff in sorted(self.terms.items(), key=degree):
             result.append(self._get_term_repr(vars, coeff))
-        foo = ' '.join(result)
-        foo = foo.lstrip(' +')
-        if foo[:2] == '- ':
-            foo = "-" + foo[2:]
-        return foo
-        
+        results = " ".join(result)
+        results = results.lstrip(" +")
+        if results[:2] == "- ":
+            results = "-" + results[2:]
+        return results  # happy, humans?

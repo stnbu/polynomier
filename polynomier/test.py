@@ -1,8 +1,6 @@
 from polynomier import Polynomial, MultiPoly, fd, str_to_poly
 from polynomier.symbols import *
 
-def thing(p):
-    print("assert p_ == \"%s\"" % p)
 
 def test():
 
