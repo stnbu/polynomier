@@ -1,6 +1,6 @@
 from itertools import product
 from frozendict import frozendict as fd
-
+from . import super_int
 
 def add(p0, p1):
     results = {}
@@ -40,7 +40,7 @@ def mul(p0, p1):
 
 class MultiPoly:
     def __init__(self, terms):
-        self.terms = terms
+        self.terms = {vars: coeff for (vars, coeff) in terms.items() if coeff != 0}
 
     def __add__(self, other):
         return self.__class__(add(self.terms, other.terms))
@@ -50,9 +50,6 @@ class MultiPoly:
 
     def __mul__(self, other):
         return self.__class__(mul(self.terms, other.terms))
-
-    def __repr__(self):
-        return repr(self.terms).replace("frozendict.frozendict", "fd")
 
     def __eq__(self, other):
         return self.terms == other.terms
@@ -80,3 +77,23 @@ class MultiPoly:
             new_poly = MultiPoly({fd(new_vars): coeff}) * expanded_symbol
             result += new_poly
         return result
+
+    def _get_term_repr(self, vars, coeff):
+        results = "+ " if coeff > 0 else "- "
+        if abs(coeff) != 1 or len(vars) == 0:
+            results += str(abs(coeff))
+        for symbol, power in sorted(vars.items()):
+            results += "%s%s" % (symbol, "" if power == 1 else super_int(power))
+        return results
+
+    def __repr__(self):
+        result = []
+        degree = lambda term: -sum(term[0].values())
+        for vars, coeff in sorted(self.terms.items(), key=degree):
+            result.append(self._get_term_repr(vars, coeff))
+        foo = ' '.join(result)
+        foo = foo.lstrip(' +')
+        if foo[:2] == '- ':
+            foo = "-" + foo[2:]
+        return foo
+        

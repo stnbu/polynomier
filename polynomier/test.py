@@ -1,21 +1,36 @@
 from polynomier import Polynomial, MultiPoly, fd, str_to_poly
 from polynomier.symbols import *
 
+def thing(p):
+    print("assert p_ == \"%s\"" % p)
 
 def test():
 
     # MultiPoly
 
     p0 = MultiPoly({fd([(x, 2)]): 3, fd([(y, 1)]): 1})
+    assert repr(p0) == "3x² + y"
     p1 = MultiPoly({fd([(x, 2)]): 2, fd([(y, 1)]): 1})
+    assert repr(p1) == "2x² + y"
     p2 = MultiPoly({fd({x: 1}): 1, fd(): -1})
+    assert repr(p2) == "x - 1"
     p3 = MultiPoly({fd({x: 2}): 1, fd(): -1})
-    F_t = MultiPoly({fd({t: 1}): 1, fd(): -1})
-    assert p0 + p1 == MultiPoly({fd({x: 2}): 5, fd({y: 1}): 2})
-    assert p0 - p1 == MultiPoly({fd({x: 2}): 1})
-    assert p0 * p1 == MultiPoly({fd({x: 4}): 6, fd({y: 1, x: 2}): 5, fd({y: 2}): 1})
-    assert p2 ** 2 == MultiPoly({fd({x: 2}): 1, fd({x: 1}): -2, fd({}): 1})
-    assert p3.substitute(x, F_t) == MultiPoly({fd({t: 2}): 1, fd({t: 1}): -2})
+    assert repr(p3) == "x² - 1"
+    p4 = p0 + p1
+    assert repr(p4) == "5x² + 2y"
+    assert p4 == MultiPoly({fd({x: 2}): 5, fd({y: 1}): 2})
+    p5 = p0 - p1
+    assert repr(p5) == "x²"
+    assert p5 == MultiPoly({fd({x: 2}): 1})
+    p6 = p0 * p1
+    assert repr(p6) == "6x⁴ + 5x²y + y²"
+    assert p6 == MultiPoly({fd({x: 4}): 6, fd({y: 1, x: 2}): 5, fd({y: 2}): 1})
+    p7 = p2 ** 2
+    assert repr(p7) == "x² - 2x + 1"
+    assert p7 == MultiPoly({fd({x: 2}): 1, fd({x: 1}): -2, fd({}): 1})
+    p8 = p3.substitute(x, MultiPoly({fd({t: 1}): 1, fd(): -1}))
+    assert repr(p8) == "t² - 2t"
+    assert p8 == MultiPoly({fd({t: 2}): 1, fd({t: 1}): -2})
 
     # Polynomial
 
