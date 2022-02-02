@@ -26,7 +26,7 @@ def test():
     p7 = p2 ** 2
     assert repr(p7) == "x² - 2x + 1"
     assert p7 == MultiPoly({fd({x: 2}): 1, fd({x: 1}): -2, fd({}): 1})
-    p8 = p3.substitute(x, MultiPoly({fd({t: 1}): 1, fd(): -1}))
+    p8 = p3.substitute((x, MultiPoly({fd({t: 1}): 1, fd(): -1})))
     assert repr(p8) == "t² - 2t"
     assert p8 == MultiPoly({fd({t: 2}): 1, fd({t: 1}): -2})
 

@@ -63,20 +63,21 @@ class MultiPoly:
             result *= result
         return result
 
-    def substitute(self, symbol, substitution):
+    def substitute(self, *args):
         result = self.__class__(self.terms.copy())
-        for vars, coeff in self.terms.items():
-            if symbol not in vars:
-                continue
-            del result.terms[vars]
-            new_vars = {}
-            for sym, power in vars.items():
-                if sym != symbol:
-                    new_vars[sym] = power
-                else:
-                    expanded_symbol = substitution ** power
-            new_poly = MultiPoly({fd(new_vars): coeff}) * expanded_symbol
-            result += new_poly
+        for symbol, substitution in args:
+            for vars, coeff in self.terms.items():
+                if symbol not in vars:
+                    continue
+                del result.terms[vars]
+                new_vars = {}
+                for sym, power in vars.items():
+                    if sym != symbol:
+                        new_vars[sym] = power
+                    else:
+                        expanded_symbol = substitution ** power
+                new_poly = MultiPoly({fd(new_vars): coeff}) * expanded_symbol
+                result += new_poly
         return result
 
     def _get_term_repr(self, vars, coeff):
