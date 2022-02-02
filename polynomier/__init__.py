@@ -1,4 +1,3 @@
-
 def super_int(num):
     num = str(num)
     if not num.isdecimal():

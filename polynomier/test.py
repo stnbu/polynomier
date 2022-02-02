@@ -1,6 +1,6 @@
-
 from polynomier import Polynomial, MultiPoly, fd, str_to_poly
 from polynomier.symbols import *
+
 
 def test():
 
@@ -90,6 +90,7 @@ def test():
     divisor = Polynomial(-1, r) ** 2
     dividend = Polynomial(-42, 0, -12, 1)
     assert dividend % divisor == Polynomial(-32, -21)
+
 
 if __name__ == "__main__":
     test()

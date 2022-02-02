@@ -2,8 +2,8 @@ import re
 from itertools import product, chain
 from . import super_int
 
-class Polynomial:
 
+class Polynomial:
     def __init__(self, *coeff, as_dict=None):
         if as_dict is None:
             self.coeff = dict(enumerate(coeff))
