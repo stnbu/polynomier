@@ -57,6 +57,29 @@ class MultiPoly:
     def __eq__(self, other):
         return self.terms == other.terms
 
+    def __pow__(self, power):
+        if power == 0:
+            return self.__class__({fd(): 1})
+        result = self
+        for _ in range(0, power-1):
+            result *= result
+        return result
+
+    def substitute(self, symbol, substitution):
+        result = self.__class__(self.terms.copy())
+        for vars, coeff in self.terms.items():
+            if symbol not in vars:
+                continue
+            del result.terms[vars]
+            new_vars = {}
+            for sym, power in vars.items():
+                if sym != symbol:
+                    new_vars[sym] = power
+                else:
+                    expanded_symbol = substitution ** power
+            new_poly = MultiPoly({fd(new_vars): coeff}) * expanded_symbol
+            result += new_poly
+        return result
 
 if __name__ == "__main__":
 
@@ -65,6 +88,11 @@ if __name__ == "__main__":
 
     p0 = MultiPoly({fd([(x, 2)]): 3, fd([(y, 1)]): 1})
     p1 = MultiPoly({fd([(x, 2)]): 2, fd([(y, 1)]): 1})
+    p2 = MultiPoly({fd({x: 1}): 1, fd(): -1})
+    p3 = MultiPoly({fd({x: 2}): 1, fd(): -1})
+    F_t = MultiPoly({fd({t: 1}): 1, fd(): -1})
     assert p0 + p1 == MultiPoly({fd({x: 2}): 5, fd({y: 1}): 2})
     assert p0 - p1 == MultiPoly({fd({x: 2}): 1})
     assert p0 * p1 == MultiPoly({fd({x: 4}): 6, fd({y: 1, x: 2}): 5, fd({y: 2}): 1})
+    assert p2 ** 2 == MultiPoly({fd({x: 2}): 1, fd({x: 1}): -2, fd({}): 1})
+    assert p3.substitute(x, F_t) == MultiPoly({fd({t: 2}): 1, fd({t: 1}): -2})
