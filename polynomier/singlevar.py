@@ -1,35 +1,8 @@
 import re
 from itertools import product, chain
-
-
-def super_int(num_string):
-    lookup = {
-        0: chr(0x2070),
-        1: chr(0x00B9),
-        2: chr(0x00B2),
-        3: chr(0x00B3),
-        4: chr(0x2074),
-        5: chr(0x2075),
-        6: chr(0x2076),
-        7: chr(0x2077),
-        8: chr(0x2078),
-        9: chr(0x2079),
-    }
-    result = ""
-    for c in num_string:
-        result += lookup[int(c)]
-    return result
-
+from . import super_int
 
 class Polynomial:
-    """The required terms dictionary takes the form
-
-    {
-        <exponent>: (set(<symbols>), <coefficient>)
-    }
-
-    Examples:
-    """
 
     def __init__(self, *coeff, as_dict=None):
         if as_dict is None:
@@ -174,78 +147,3 @@ def str_to_poly(string):
     results = results.replace("-", "@-")
     results = results.replace("+", "@+").lstrip("@")
     return [parse_term(term) for term in results.split("@")]
-
-
-if __name__ == "__main__":
-
-    assert str_to_poly("3x^2") == [(2, {"x"}, 3.0)]
-    assert str_to_poly("-3x^3y^3") == [(3, {"x", "y"}, -3.0)]
-    assert str_to_poly("-3x^3y^3 + 2y^2") == [(3, {"x", "y"}, -3.0), (2, {"y"}, 2.0)]
-    assert str_to_poly("-3x^3y^3 + 2y^2 - y") == [
-        (3, {"x", "y"}, -3.0),
-        (2, {"y"}, 2.0),
-        (1, {"y"}, -1.0),
-    ]
-    assert str_to_poly("-3x^3y^3 + 2y^2 - y + 3") == [
-        (3, {"x", "y"}, -3.0),
-        (2, {"y"}, 2.0),
-        (1, {"y"}, -1.0),
-        (1, set(), 3.0),
-    ]
-
-    p1 = Polynomial(0, 0, 1)
-    print("p1 = %s" % p1)
-    p2 = Polynomial(1, 0, 2)
-    print("p2 = %s" % p2)
-    p3 = p1 * p2
-    print("p3 = p1 * p2 = %s" % p3)
-    p4 = p3 + p2
-    print("p4 = p3 + p2 = %s" % p4)
-    p5 = p4 + 8
-    print("p5 = p4 + 8 = %s" % p5)
-    p6 = p3 - 8
-    print("p6 = p3 - 8 = %s" % p6)
-    p7 = p4 - p3
-    print("p7 = p4 - p3 = %s" % p7)
-
-    assert 36 == p3(2)
-    assert 4 == p1(2)
-    assert 9 == p2(2)
-    assert Polynomial(1, 0, 3, 0, 2) == p4
-    assert Polynomial(as_dict={4: 2, 2: 3, 0: 9}) == p5
-    assert Polynomial(as_dict={4: 2, 2: 1, 0: -8}) == p6
-    assert p7 == Polynomial(0, 0, 1) * 2 + 1
-
-    p8 = Polynomial(1, 1)
-    p9 = Polynomial(1, 1)
-    print("(%s) * (%s) = %s" % (p8, p9, p8 * p9))
-
-    p10 = Polynomial(1, 1)
-    p11 = Polynomial(-1, 1)
-    print("(%s) * (%s) = %s" % (p10, p11, p10 * p11))
-
-    division = [
-        (Polynomial(5, 2, 1, 3), Polynomial(1, 2, 1)),
-        (Polynomial(-10, -3, 1), Polynomial(2, 1)),
-        (Polynomial(-4, 0, -2, 1), Polynomial(-3, 1)),
-    ]
-    for dividend, divisor in division:
-        quotient = dividend // divisor
-        remainder = dividend % divisor
-        assert dividend == divisor * quotient + remainder
-        assert dividend / divisor == quotient + remainder
-
-    rootable = Polynomial(-1, 0, 1)
-    assert rootable.is_root(1)
-    assert rootable.is_root(-1)
-
-    has_complex_roots = Polynomial(1, 0, 1)
-    assert has_complex_roots.is_root(1j)
-    assert has_complex_roots.is_root(-1j)
-
-    # see:
-    # https://en.wikipedia.org/wiki/Polynomial_long_division#Finding_tangents_to_polynomial_functions
-    r = 1
-    divisor = Polynomial(-1, r) ** 2
-    dividend = Polynomial(-42, 0, -12, 1)
-    assert dividend % divisor == Polynomial(-32, -21)

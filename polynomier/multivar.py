@@ -80,20 +80,3 @@ class MultiPoly:
             new_poly = MultiPoly({fd(new_vars): coeff}) * expanded_symbol
             result += new_poly
         return result
-
-
-if __name__ == "__main__":
-
-    for v in "abcdefghijklmnopqrstuvwxyz":
-        globals()[v] = v
-
-    p0 = MultiPoly({fd([(x, 2)]): 3, fd([(y, 1)]): 1})
-    p1 = MultiPoly({fd([(x, 2)]): 2, fd([(y, 1)]): 1})
-    p2 = MultiPoly({fd({x: 1}): 1, fd(): -1})
-    p3 = MultiPoly({fd({x: 2}): 1, fd(): -1})
-    F_t = MultiPoly({fd({t: 1}): 1, fd(): -1})
-    assert p0 + p1 == MultiPoly({fd({x: 2}): 5, fd({y: 1}): 2})
-    assert p0 - p1 == MultiPoly({fd({x: 2}): 1})
-    assert p0 * p1 == MultiPoly({fd({x: 4}): 6, fd({y: 1, x: 2}): 5, fd({y: 2}): 1})
-    assert p2 ** 2 == MultiPoly({fd({x: 2}): 1, fd({x: 1}): -2, fd({}): 1})
-    assert p3.substitute(x, F_t) == MultiPoly({fd({t: 2}): 1, fd({t: 1}): -2})
