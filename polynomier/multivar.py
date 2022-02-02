@@ -61,7 +61,7 @@ class MultiPoly:
         if power == 0:
             return self.__class__({fd(): 1})
         result = self
-        for _ in range(0, power-1):
+        for _ in range(0, power - 1):
             result *= result
         return result
 
@@ -80,6 +80,7 @@ class MultiPoly:
             new_poly = MultiPoly({fd(new_vars): coeff}) * expanded_symbol
             result += new_poly
         return result
+
 
 if __name__ == "__main__":
 
