@@ -38,12 +38,15 @@ def mul(p0, p1):
         results[fd(new_vars)] += coeff0 * coeff1
     return results
 
+
 def reclassify(method):
     def wrapper(self, other):
         if not isinstance(other, self.__class__):
             other = self.__class__({fd(): other})
         return method(self, other)
+
     return wrapper
+
 
 class MultiPoly:
     def __init__(self, terms):
