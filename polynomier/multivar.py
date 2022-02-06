@@ -1,3 +1,13 @@
+# TODO:
+# * Write tests for fields other than R.
+# * What if not a Field? What then!
+# * See if we can include negative exponents.
+# * Implement __div__ and family.
+# * I guess s/MultiPoly/Polinomial/g
+# * Q can be implemented elegantly including clean, readable output. Do that.
+# * Maybe a latex printer.
+# * Would it be reasonable to use sympy's expression tooling?
+
 from itertools import product
 from frozendict import frozendict as fd
 from . import super_int
