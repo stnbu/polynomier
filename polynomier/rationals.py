@@ -1,17 +1,17 @@
-
 import math
+
 
 def get_gcd(x: int, y: int):
     if y == 0:
         return x
     return get_gcd(y, x % y)
 
-class Q:
 
+class Q:
     def __init__(self, n: int, d: int):
         if d == 0:
             raise ZeroDivisionError
-        
+
         if d < 0:  # let n always carry the sign.
             n *= -1
             d *= -1
@@ -32,10 +32,10 @@ class Q:
             n *= n
             d *= d
         # shrug
-        n = math.pow(n, 1/other.d)
+        n = math.pow(n, 1 / other.d)
         if n != int(n):
             raise ValueError("irrational")
-        d = math.pow(d, 1/other.d)
+        d = math.pow(d, 1 / other.d)
         if d != int(d):
             raise ValueError("irrational")
         return self.__class__(int(n), int(d))
@@ -48,8 +48,9 @@ class Q:
 
     def __eq__(self, other):
         return (
-            #self.n == other.n == 0 or
-            self.n == other.n and self.d == other.d
+            # self.n == other.n == 0 or
+            self.n == other.n
+            and self.d == other.d
         )
 
     def __add__(self, other):
@@ -67,9 +68,9 @@ class Q:
     def __repr__(self):
         return "%d/%d" % (self.n, self.d)
 
+
 if __name__ == "__main__":
 
-    
     q1 = Q(3, 9)
     q2 = Q(4, 8)
     assert q1 == Q(1, 3)
@@ -83,22 +84,18 @@ if __name__ == "__main__":
 
     assert q1 - q2 == Q(-1, 6)
 
-    assert Q(2, 1)**Q(2, 1) == Q(4, 1)
-    assert Q(4, 1)**Q(1, 2) == Q(2, 1)
-
+    assert Q(2, 1) ** Q(2, 1) == Q(4, 1)
+    assert Q(4, 1) ** Q(1, 2) == Q(2, 1)
 
     for exception_test, expected_exception in [
-            (lambda: Q(1/0), ZeroDivisionError),
-            (lambda: Q(2/0), ZeroDivisionError),
-            (lambda: Q(1/0), ZeroDivisionError),
-            (lambda: Q(1.1, 3), TypeError),
-            (lambda: Q(3, 1.1), TypeError),
+        (lambda: Q(1 / 0), ZeroDivisionError),
+        (lambda: Q(2 / 0), ZeroDivisionError),
+        (lambda: Q(1 / 0), ZeroDivisionError),
+        (lambda: Q(1.1, 3), TypeError),
+        (lambda: Q(3, 1.1), TypeError),
     ]:
         try:
             exception_test()
             raise AssertionError
         except expected_exception:
             pass
-
-
-    
