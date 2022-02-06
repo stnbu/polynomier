@@ -105,7 +105,12 @@ class Polynomial:
             results += "%s%s" % (symbol, "" if power == 1 else super_int(power))
         return results
 
+    def _get_terms_repr(self):
+        return repr(self.terms).replace("frozendict.frozendict", "fd")
+
     def __repr__(self):
+        if not all([isinstance(c, (int, float)) for c in self.terms.values()]):
+            return self._get_terms_repr()
         result = []
         degree = lambda term: -sum(term[0].values())
         for vars, coeff in sorted(self.terms.items(), key=degree):

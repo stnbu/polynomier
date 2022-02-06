@@ -4,8 +4,6 @@ from polynomier.symbols import *
 
 def test():
 
-    # Polynomial
-
     p0 = Polynomial({fd([(x, 2)]): 3, fd([(y, 1)]): 1})
     assert repr(p0) == "3x² + y"
     p1 = Polynomial({fd([(x, 2)]): 2, fd([(y, 1)]): 1})
@@ -59,3 +57,24 @@ def test():
     p10 = Polynomial({fd({x: 1}): 1, fd(): 1})
     p11 = Polynomial({fd({x: 1}): 1, fd(): -1})
     assert repr(p10 * p11) == "x² - 1"
+
+    # Other fields...
+
+    a = 3 - 4j
+    b = -1 + 1j
+    c = 4 + 0j
+    d = -0.5j
+
+    p12 = Polynomial({fd({x: 1}): a, fd(): b})
+    p13 = Polynomial({fd({x: 2}): c, fd({x: 1}): d})
+    assert p12 * p13 == Polynomial(
+        {
+            fd({"x": 3}): (12 - 16j),
+            fd({"x": 2}): (-6 + 2.5j),
+            fd({"x": 1}): (0.5 + 0.5j),
+        }
+    )
+
+
+if __name__ == "__main__":
+    test()
