@@ -58,7 +58,7 @@ def wrap(handler):
     return wrapper
 
 
-class MultiPoly:
+class Polynomial:
     __add__ = wrap(add)
     __sub__ = wrap(sub)
     __mul__ = wrap(mul)
@@ -93,7 +93,7 @@ class MultiPoly:
                         new_vars[sym] = power
                     else:
                         expanded_symbol = substitution ** power
-                new_poly = MultiPoly({fd(new_vars): coeff}) * expanded_symbol
+                new_poly = self.__class__({fd(new_vars): coeff}) * expanded_symbol
                 result += new_poly
         return result
 
