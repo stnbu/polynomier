@@ -20,7 +20,7 @@ def super_int(num):
     return result
 
 
-from .multivar import Polynomial, fd
+from .poly import Polynomial, fd
 from . import symbols
 
 __all__ = ["Polynomial", "fd", "str_to_poly"]
