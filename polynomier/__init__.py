@@ -23,4 +23,6 @@ def super_int(num):
 from .poly import Polynomial, fd
 from . import symbols
 
-__all__ = ["Polynomial", "fd", "str_to_poly"]
+MultiPoly = Polynomial
+
+__all__ = ["Polynomial", "MultiPoly", "fd", "str_to_poly"]
