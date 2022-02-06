@@ -54,6 +54,7 @@ def wrap(handler):
         if not isinstance(other, self.__class__):
             other = self.__class__({fd(): other})
         return self.__class__(handler(self.terms, other.terms))
+
     return wrapper
 
 
