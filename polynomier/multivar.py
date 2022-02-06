@@ -49,33 +49,26 @@ def mul(p0, p1):
     return results
 
 
-def reclassify(method):
+def wrap(handler):
     def wrapper(self, other):
         if not isinstance(other, self.__class__):
             other = self.__class__({fd(): other})
-        return method(self, other)
-
+        return self.__class__(handler(self.terms, other.terms))
     return wrapper
 
 
 class MultiPoly:
+    __add__ = wrap(add)
+    __sub__ = wrap(sub)
+    __mul__ = wrap(mul)
+    __add__ = wrap(add)
+
     def __init__(self, terms):
         self.terms = {vars: coeff for (vars, coeff) in terms.items() if coeff != 0}
 
-    @reclassify
-    def __add__(self, other):
-        return self.__class__(add(self.terms, other.terms))
-
-    @reclassify
-    def __sub__(self, other):
-        return self.__class__(sub(self.terms, other.terms))
-
-    @reclassify
-    def __mul__(self, other):
-        return self.__class__(mul(self.terms, other.terms))
-
-    @reclassify
     def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            other = self.__class__({fd(): other})
         return self.terms == other.terms
 
     def __pow__(self, power):
