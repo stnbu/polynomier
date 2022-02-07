@@ -96,6 +96,24 @@ class Polynomial:
                 result += new_poly
         return result
 
+    @classmethod
+    def from_sympy_expr(cls, expr):
+        raise NotImplemented
+
+    def to_sympy_expr(self):
+        from sympy import symbols
+        from sympy.core.add import Add
+        from sympy.core.mul import Mul
+        from sympy.core.expr import ExprBuilder
+        poly = ExprBuilder(Add, [0])
+        for vars, coeff in self.terms.items():
+            term =  ExprBuilder(Mul, [coeff])
+            for symbol, power in vars.items():
+                symbol = symbols(symbol)
+                term.args.extend([symbol] * power)
+            poly.args.append(term)
+        return poly.build()
+
     def _get_term_repr(self, vars, coeff):
         results = "+ " if coeff > 0 else "- "
         if abs(coeff) != 1 or len(vars) == 0:

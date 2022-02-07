@@ -82,6 +82,12 @@ def test_Polynomial():
         {fd({t: 2}): 4, fd({t: 1}): 5}
     )
 
+    from sympy import symbols
+    _x, _y, _z = symbols("x y z")
+    p15 = Polynomial({fd({x: 2}): 1, fd({y: 1}): 1, fd(): 4})
+    assert p15.to_sympy_expr() ==  _x**2 + _y + 4
+    p16 = Polynomial({fd({x: 3}): -3, fd({y: 2, z: 1}): 2, fd(): -1})
+    assert p16.to_sympy_expr() ==  -3 * _x**3 + 2 * _y**2 * _z - 1
 
 def test_Q():
     q1 = Q(3, 9)
