@@ -105,9 +105,10 @@ class Polynomial:
         from sympy.core.add import Add
         from sympy.core.mul import Mul
         from sympy.core.expr import ExprBuilder
+
         poly = ExprBuilder(Add, [0])
         for vars, coeff in self.terms.items():
-            term =  ExprBuilder(Mul, [coeff])
+            term = ExprBuilder(Mul, [coeff])
             for symbol, power in vars.items():
                 symbol = symbols(symbol)
                 term.args.extend([symbol] * power)
