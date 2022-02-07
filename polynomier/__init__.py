@@ -25,4 +25,4 @@ from .polynomials import Polynomial
 from .rationals import Q
 from . import symbols
 
-__all__ = ["Polynomial", "fd", "str_to_poly", "Q"]
+__all__ = ["Polynomial", "fd", "Q"]
