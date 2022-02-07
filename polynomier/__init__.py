@@ -19,6 +19,7 @@ def super_int(num):
         result += lookup[int(c)]
     return result
 
+
 from frozendict import frozendict as fd
 from .polynomials import Polynomial
 from .rationals import Q
