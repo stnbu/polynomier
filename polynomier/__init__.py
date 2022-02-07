@@ -21,8 +21,9 @@ def super_int(num):
 
 
 from .poly import Polynomial, fd
+from .rationals import Q
 from . import symbols
 
 MultiPoly = Polynomial
 
-__all__ = ["Polynomial", "MultiPoly", "fd", "str_to_poly"]
+__all__ = ["Polynomial", "MultiPoly", "fd", "str_to_poly", "Q"]

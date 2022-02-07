@@ -1,12 +1,6 @@
 import math
 
 
-def get_gcd(x: int, y: int):
-    if y == 0:
-        return x
-    return get_gcd(y, x % y)
-
-
 class Q:
     def __init__(self, n: int, d: int):
         if d == 0:
@@ -78,11 +72,11 @@ if __name__ == "__main__":
     assert q1 * q2 == Q(1, 6)
     assert q1 + q2 == Q(5, 6)
     assert q1 / q2 == Q(2, 3)
+    assert q1 - q2 == Q(-1, 6)
 
     assert Q(-1, 2) == Q(1, -2)
+    assert Q(-1, -1) == Q(1, 1)
     assert Q(0, 1) == Q(0, 3)
-
-    assert q1 - q2 == Q(-1, 6)
 
     assert Q(2, 1) ** Q(2, 1) == Q(4, 1)
     assert Q(4, 1) ** Q(1, 2) == Q(2, 1)
@@ -93,6 +87,7 @@ if __name__ == "__main__":
         (lambda: Q(1 / 0), ZeroDivisionError),
         (lambda: Q(1.1, 3), TypeError),
         (lambda: Q(3, 1.1), TypeError),
+        (lambda: Q(2, 1) ** Q(1, 2), ValueError),
     ]:
         try:
             exception_test()

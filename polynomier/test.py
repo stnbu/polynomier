@@ -1,8 +1,8 @@
-from polynomier import Polynomial, fd
+from polynomier import Polynomial, fd, Q
 from polynomier.symbols import *
 
 
-def test():
+def test_Polynomial():
 
     p0 = Polynomial({fd([(x, 2)]): 3, fd([(y, 1)]): 1})
     assert repr(p0) == "3x² + y"
@@ -75,6 +75,37 @@ def test():
         }
     )
 
+def test_Q():
+    q1 = Q(3, 9)
+    q2 = Q(4, 8)
+    assert q1 == Q(1, 3)
+    assert q2 == Q(1, 2)
+    assert q1 * q2 == Q(1, 6)
+    assert q1 + q2 == Q(5, 6)
+    assert q1 / q2 == Q(2, 3)
+    assert q1 - q2 == Q(-1, 6)
+
+    assert Q(-1, 2) == Q(1, -2)
+    assert Q(-1, -1) == Q(1, 1)
+    assert Q(0, 1) == Q(0, 3)
+
+    assert Q(2, 1) ** Q(2, 1) == Q(4, 1)
+    assert Q(4, 1) ** Q(1, 2) == Q(2, 1)
+
+    for exception_test, expected_exception in [
+        (lambda: Q(1 / 0), ZeroDivisionError),
+        (lambda: Q(2 / 0), ZeroDivisionError),
+        (lambda: Q(1 / 0), ZeroDivisionError),
+        (lambda: Q(1.1, 3), TypeError),
+        (lambda: Q(3, 1.1), TypeError),
+        (lambda: Q(2, 1) ** Q(1, 2), ValueError),
+    ]:
+        try:
+            exception_test()
+            raise AssertionError
+        except expected_exception:
+            pass
 
 if __name__ == "__main__":
-    test()
+    test_Polynomial()
+    test_Q()
