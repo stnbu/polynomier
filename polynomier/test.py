@@ -75,6 +75,7 @@ def test_Polynomial():
         }
     )
 
+
 def test_Q():
     q1 = Q(3, 9)
     q2 = Q(4, 8)
@@ -105,6 +106,7 @@ def test_Q():
             raise AssertionError
         except expected_exception:
             pass
+
 
 if __name__ == "__main__":
     test_Polynomial()
