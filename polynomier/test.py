@@ -78,7 +78,9 @@ def test_Polynomial():
     p14 = Polynomial({fd({x: 2}): 1, fd({y: 1}): 1, fd(): 4})
     g_x = Polynomial({fd({t: 1}): 2, fd(): 1})
     g_y = Polynomial({fd({t: 1}): 1, fd(): -5})
-    assert p14.substitute((x, g_x), (y, g_y)) == Polynomial({fd({t: 2}): 4, fd({t: 1}): 5})
+    assert p14.substitute((x, g_x), (y, g_y)) == Polynomial(
+        {fd({t: 2}): 4, fd({t: 1}): 5}
+    )
 
 
 def test_Q():
