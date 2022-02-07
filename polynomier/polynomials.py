@@ -9,8 +9,7 @@
 # * Would it be reasonable to use sympy's expression tooling?
 
 from itertools import product
-from frozendict import frozendict as fd
-from . import super_int
+from . import super_int, fd
 
 
 def add(p0, p1):

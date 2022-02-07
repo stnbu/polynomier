@@ -19,11 +19,9 @@ def super_int(num):
         result += lookup[int(c)]
     return result
 
-
-from .poly import Polynomial, fd
+from frozendict import frozendict as fd
+from .polynomials import Polynomial
 from .rationals import Q
 from . import symbols
-
-MultiPoly = Polynomial
 
 __all__ = ["Polynomial", "MultiPoly", "fd", "str_to_poly", "Q"]
