@@ -1,0 +1,4 @@
+#!/bin/sh -ue
+
+#cd $(dirname $(dirname "$0"))
+python3 polynomier/test.py
