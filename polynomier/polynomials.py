@@ -53,6 +53,7 @@ def _sympy_term_to_dict(expr):
     from sympy.core.mul import Mul
     from sympy.core.power import Pow
     from sympy.core.expr import ExprBuilder
+
     coeff = 1
     vars = {}
     operations = [expr]
@@ -74,6 +75,7 @@ def _sympy_term_to_dict(expr):
 
 def sympy_poly_to_dict(expr):
     from sympy.core.add import Add
+
     operations = [expr] if not isinstance(expr, Add) else expr.args
     poly = {}
     for operation in operations:
@@ -81,11 +83,13 @@ def sympy_poly_to_dict(expr):
         poly[vars] = coeff
     return poly
 
+
 def dict_to_sympy_poly(terms):
     from sympy import symbols
     from sympy.core.add import Add
     from sympy.core.mul import Mul
     from sympy.core.expr import ExprBuilder
+
     poly = ExprBuilder(Add, [0])
     for vars, coeff in terms.items():
         term = ExprBuilder(Mul, [coeff])
@@ -94,6 +98,7 @@ def dict_to_sympy_poly(terms):
             term.args.extend([symbol] * power)
         poly.args.append(term)
     return poly.build()
+
 
 def wrap(handler):
     def wrapper(self, other):
