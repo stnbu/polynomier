@@ -86,9 +86,14 @@ def test_Polynomial():
 
     _x, _y, _z = symbols("x y z")
     p15 = Polynomial({fd({x: 2}): 1, fd({y: 1}): 1, fd(): 4})
-    assert p15.to_sympy_expr() == _x ** 2 + _y + 4
+    assert p15.to_sympy() == _x ** 2 + _y + 4
     p16 = Polynomial({fd({x: 3}): -3, fd({y: 2, z: 1}): 2, fd(): -1})
-    assert p16.to_sympy_expr() == -3 * _x ** 3 + 2 * _y ** 2 * _z - 1
+    assert p16.to_sympy() == -3 * _x ** 3 + 2 * _y ** 2 * _z - 1
+
+    p17 = Polynomial.from_sympy(2 * _x ** 2 * _y + _x * _z)
+    p18 = Polynomial({fd({x: 2, y: 1}): 2, fd({x: 1, z: 1}): 1})
+    assert p17 == p18
+    assert p17.to_sympy() == p18.to_sympy()
 
 
 def test_Q():

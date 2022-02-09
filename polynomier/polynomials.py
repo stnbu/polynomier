@@ -48,6 +48,53 @@ def mul(p0, p1):
     return results
 
 
+def _sympy_term_to_dict(expr):
+    from sympy.core.symbol import Symbol
+    from sympy.core.mul import Mul
+    from sympy.core.power import Pow
+    from sympy.core.expr import ExprBuilder
+    coeff = 1
+    vars = {}
+    operations = [expr]
+    if isinstance(expr, Mul):
+        operations = expr.args
+    for operation in operations:
+        if isinstance(operation, Pow):
+            symbol, power = operation.args
+            vars[str(symbol)] = power
+        elif isinstance(operation, Symbol):
+            vars[str(operation)] = 1
+        elif isinstance(operation, Mul):
+            vars.update(_sympy_term_to_dict(operation))
+        else:
+            # it's a "number" or something.
+            coeff *= operation
+    return fd(vars), coeff
+
+
+def sympy_poly_to_dict(expr):
+    from sympy.core.add import Add
+    operations = [expr] if not isinstance(expr, Add) else expr.args
+    poly = {}
+    for operation in operations:
+        vars, coeff = _sympy_term_to_dict(operation)
+        poly[vars] = coeff
+    return poly
+
+def dict_to_sympy_poly(terms):
+    from sympy import symbols
+    from sympy.core.add import Add
+    from sympy.core.mul import Mul
+    from sympy.core.expr import ExprBuilder
+    poly = ExprBuilder(Add, [0])
+    for vars, coeff in terms.items():
+        term = ExprBuilder(Mul, [coeff])
+        for symbol, power in vars.items():
+            symbol = symbols(symbol)
+            term.args.extend([symbol] * power)
+        poly.args.append(term)
+    return poly.build()
+
 def wrap(handler):
     def wrapper(self, other):
         if not isinstance(other, self.__class__):
@@ -97,23 +144,11 @@ class Polynomial:
         return result
 
     @classmethod
-    def from_sympy_expr(cls, expr):
-        raise NotImplemented
+    def from_sympy(cls, expr):
+        return cls(sympy_poly_to_dict(expr))
 
-    def to_sympy_expr(self):
-        from sympy import symbols
-        from sympy.core.add import Add
-        from sympy.core.mul import Mul
-        from sympy.core.expr import ExprBuilder
-
-        poly = ExprBuilder(Add, [0])
-        for vars, coeff in self.terms.items():
-            term = ExprBuilder(Mul, [coeff])
-            for symbol, power in vars.items():
-                symbol = symbols(symbol)
-                term.args.extend([symbol] * power)
-            poly.args.append(term)
-        return poly.build()
+    def to_sympy(self):
+        return dict_to_sympy_poly(self.terms)
 
     def _get_term_repr(self, vars, coeff):
         results = "+ " if coeff > 0 else "- "
