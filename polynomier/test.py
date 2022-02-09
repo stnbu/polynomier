@@ -95,6 +95,28 @@ def test_Polynomial():
     assert p17 == p18
     assert p17.to_sympy() == p18.to_sympy()
 
+    assert Polynomial({fd({x: 2}): 1, fd({y: 1}): -1}).get_derivative_wrt(
+        y
+    ) == Polynomial({fd({x: 2}): 1, fd(): -1})
+    assert Polynomial({fd({x: 2}): 1, fd({y: 1}): -1}).get_derivative_wrt(
+        x
+    ) == Polynomial({fd({x: 1}): 2, fd({y: 1}): -1})
+    assert Polynomial({fd({x: 2}): 1}).get_derivative_wrt(x) == Polynomial(
+        {fd({x: 1}): 2}
+    )
+    assert Polynomial(
+        {fd({x: 2}): 1, fd({x: 3}): 1, fd({y: 1}): -1}
+    ).get_derivative_wrt(x) == Polynomial(
+        {fd({x: 1}): 2, fd({x: 2}): 3, fd({y: 1}): -1}
+    )
+    assert Polynomial({fd({x: 2, z: 3}): 1, fd({y: 1, x: 4}): -1}).get_derivative_wrt(
+        x
+    ) == Polynomial({fd({x: 1, z: 3}): 2, fd({y: 1, x: 3}): -4})
+    assert Polynomial({fd({x: 1}): 1}).get_derivative_wrt(x) == Polynomial({fd(): 1})
+    assert Polynomial({fd({x: 4}): 1}).get_derivative_wrt(x).get_derivative_wrt(
+        x
+    ) == Polynomial({fd({x: 2}): 12})
+
 
 def test_Q():
     q1 = Q(3, 9)

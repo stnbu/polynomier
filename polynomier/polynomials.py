@@ -200,6 +200,8 @@ class Polynomial:
             new_power = power - 1
             if new_power > 0:
                 new_vars[symbol] = new_power
+            if new_power < 1:
+                del new_vars[symbol]
             new_coeff *= power
             derivative_terms[fd(new_vars)] = new_coeff
         return self.__class__(derivative_terms)
