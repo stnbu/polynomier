@@ -178,3 +178,28 @@ class Polynomial:
         if results[:2] == "- ":
             results = "-" + results[2:]
         return results  # happy, humans?
+
+    def get_vars(self):
+        v = set()
+        for vars in self.terms:
+            v.update(vars)
+        return v
+
+    def get_derivative_wrt(self, symbol):
+        vars = self.get_vars()
+        if symbol not in vars:
+            raise ValueError("symbol %s not in %s" % (symbol, self))
+        derivative_terms = {}
+        for vars, coeff in self.terms.items():
+            if symbol not in vars:
+                derivative_terms[vars] = coeff
+                continue
+            new_vars = dict(vars)
+            new_coeff = coeff
+            power = vars[symbol]
+            new_power = power - 1
+            if new_power > 0:
+                new_vars[symbol] = new_power
+            new_coeff *= power
+            derivative_terms[fd(new_vars)] = new_coeff
+        return self.__class__(derivative_terms)
